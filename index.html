@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Das geheimnisvolle EVA-Prinzip</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#eef4f2;--fg:#27403d;--card:#fbfdfc;--bd:#c5d9d4;--ac:#4f9a8f;--ac2:#e9c98f;--ok:#d9efe4;--okb:#4f9a8f;--no:#f6e4df;--nob:#c47a68;--mut:#7d9a95}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#18262a;--fg:#e2efec;--card:#223338;--bd:#3b5459;--ac:#6bb7ab;--ac2:#c9a766;--ok:#1f4a42;--okb:#6bb7ab;--no:#4a2f2b;--nob:#d38d7b;--mut:#8fb0aa}}
+:root[data-theme="dark"]{--bg:#18262a;--fg:#e2efec;--card:#223338;--bd:#3b5459;--ac:#6bb7ab;--ac2:#c9a766;--ok:#1f4a42;--okb:#6bb7ab;--no:#4a2f2b;--nob:#d38d7b;--mut:#8fb0aa}
+html,body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:720px;margin:0 auto;padding:14px}
+h1{font-size:1.45rem;margin:6px 0;text-align:center}
+.card{background:var(--card);border:2px solid var(--bd);border-radius:18px;padding:16px;margin:12px 0}
+.path{display:flex;gap:4px;margin:10px 0}
+.pd{flex:1;height:10px;border-radius:6px;background:var(--bd)}
+.pd.done{background:var(--ac)}.pd.now{background:var(--ac2)}
+.code{display:flex;justify-content:center;gap:5px;flex-wrap:wrap;margin:8px 0}
+.slot{min-width:30px;padding:6px 7px;text-align:center;border-radius:9px;border:2px dashed var(--bd);font-weight:700;font-size:1.1rem;color:var(--mut)}
+.slot.got{border:2px solid var(--ac2);color:var(--fg);background:var(--ok);animation:pop .6s}
+@keyframes pop{0%{transform:scale(.5) rotate(-6deg)}70%{transform:scale(1.2)}100%{transform:scale(1)}}
+svg.sc{width:100%;height:auto;border-radius:14px;display:block}
+h2{margin:10px 0 6px;text-align:center;font-size:1.2rem}
+.desc{line-height:1.5;text-align:center}
+.q{font-weight:700;margin:12px 0 8px;text-align:center}
+.opt{display:block;width:100%;margin:8px 0;padding:12px 14px;border-radius:12px;border:2px solid var(--bd);background:var(--card);color:var(--fg);font:inherit;cursor:pointer;text-align:left}
+.opt:hover:not(:disabled){border-color:var(--ac)}
+.opt.bad{background:var(--no);border-color:var(--nob);opacity:.8}
+.opt.good{background:var(--ok);border-color:var(--okb)}
+#fb{margin-top:10px;padding:10px;border-radius:12px;text-align:center;display:none}
+#fb.ok{display:block;background:var(--ok)}#fb.no{display:block;background:var(--no)}
+.btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:12px 22px;background:var(--ac);color:#fff;cursor:pointer;display:block;margin:12px auto 0}
+.btn.sec{background:var(--ac2);color:#2a2a2a}
+input{font:inherit;padding:11px;border-radius:10px;border:2px solid var(--bd);background:var(--card);color:var(--fg);width:80%;max-width:300px;text-align:center}
+.cert{border:6px double var(--ac2);text-align:center;padding:22px}
+.cert h2{font-size:1.6rem}.big{font-size:1.4rem;font-weight:700;margin:8px 0}
+.hide{display:none}.c{text-align:center}
+@media print{body{background:#fff;color:#000}.noprint{display:none!important}}
+</style></head><body><main>
+<h1>🧭 Das geheimnisvolle EVA-Prinzip</h1>
+
+<div id="intro" class="card c">
+<svg class="sc" viewBox="0 0 300 110"><rect width="300" height="110" fill="#cfe6df"/><text x="40" y="75" font-size="54">🗺️</text><text x="125" y="80" font-size="60">🔐</text><text x="215" y="75" font-size="54">💻</text></svg>
+<p class="desc">Willkommen, Entdecker! Auf zehn Stationen findest du je einen Teil des geheimen Codes. Beantworte die Frage richtig, dann öffnet sich die nächste Station. Am Ende setzt du das Codewort zusammen und bekommst dein Zertifikat.</p>
+<input id="name" placeholder="Dein Name" maxlength="30">
+<button class="btn" onclick="begin()">Reise starten ➜</button>
+</div>
+
+<div id="game" class="hide">
+<div class="path" id="path"></div>
+<div class="code" id="code"></div>
+<div class="card" id="st"></div>
+</div>
+
+<div id="final" class="hide"><div class="card c">
+<h2>🔓 Alle Teile gefunden!</h2>
+<div class="code" id="code2"></div>
+<p>Setze die zehn Teile von links nach rechts zusammen und tippe das Codewort ein.</p>
+<input id="word" placeholder="Codewort"><button class="btn" onclick="check()">Code prüfen</button>
+<p id="ffb" class="hide"></p>
+</div></div>
+
+<div id="certw" class="hide">
+<div class="card cert">
+<div style="font-size:3rem">🏅</div>
+<h2>Reisezertifikat</h2>
+<p>Hiermit wird bestätigt, dass</p>
+<div class="big" id="cn"></div>
+<p>das Geheimnis des <b>EVA-Prinzips</b> gelöst hat:<br><b>E</b>ingabe – <b>V</b>erarbeitung – <b>A</b>usgabe</p>
+<div class="big">⭐ <span id="cp"></span> von 20 Punkten</div>
+<div id="cr"></div>
+<p style="color:var(--mut)" id="cd"></p>
+</div>
+<button class="btn noprint" onclick="window.print()">🖨️ Zertifikat drucken</button>
+<button class="btn sec noprint" onclick="location.reload()">🔄 Nochmal spielen</button>
+</div>
+</main>
+<script>
+const S=[
+{c:"#cfe6df",e:["🚪","⌨️","🖱️"],t:"Das Tor der Eingabe",d:"Ein großes Tor öffnet sich nur, wenn du dem Computer etwas mitteilst.",q:"Welches Gerät ist ein Eingabegerät?",o:["Tastatur","Monitor","Lautsprecher"],a:0,h:"Eingabegeräte schicken Informationen in den Computer hinein.",p:"E"},
+{c:"#d9e6f2",e:["🎤","🌊","📷"],t:"Der Strand der Geräusche",d:"Am Strand rauscht das Meer. Der Computer soll deine Stimme hören.",q:"Welches Gerät nimmt deine Stimme auf?",o:["Drucker","Beamer","Mikrofon"],a:2,h:"Es ist ein Eingabegerät für Töne.",p:"V"},
+{c:"#f2e8d0",e:["🧠","⚙️","🔧"],t:"Die Werkstatt des Gehirns",d:"In der Werkstatt summt eine kleine Maschine. Sie denkt blitzschnell nach.",q:"Welcher Teil ist das „Gehirn“ des Computers?",o:["Prozessor (CPU)","Maus","Webcam"],a:0,h:"Er rechnet und führt alle Befehle aus.",p:"A"},
+{c:"#e3ecd9",e:["🧮","🔢","💡"],t:"Das Rechenfeld",d:"Auf dem Feld liegen Zahlen. Jemand muss sie addieren, vergleichen und sortieren.",q:"Was bedeutet Verarbeitung im EVA-Prinzip?",o:["Daten ausdrucken","Daten rechnen und bearbeiten","Daten eintippen"],a:1,h:"Zwischen Eingabe und Ausgabe passiert das Rechnen.",p:"-P"},
+{c:"#ead9e6",e:["📚","💾","🗄️"],t:"Die Bibliothek der Daten",d:"In der Bibliothek stehen unzählige Bücher. Sie bewahren alles auf.",q:"Was speichert deine Dateien dauerhaft?",o:["Joystick","Festplatte oder SSD","Lautsprecher"],a:1,h:"Dieser Speicher vergisst nichts, auch wenn der Strom aus ist.",p:"R"},
+{c:"#d4e8ec",e:["🔭","🖥️","🌅"],t:"Der Turm der Anzeige",d:"Im Turm leuchtet ein großes Fenster und zeigt dir ein Bild.",q:"Welches Gerät zeigt Bilder und Texte an?",o:["Scanner","Tastatur","Monitor"],a:2,h:"Es ist ein Ausgabegerät mit vielen Pixeln.",p:"I"},
+{c:"#f0dfd6",e:["🎶","🔊","🎧"],t:"Der Konzertgarten",d:"Im Garten spielt Musik. Der Computer macht Töne hörbar.",q:"Welche Geräte sind Ausgabegeräte?",o:["Mikrofon und Maus","Lautsprecher und Kopfhörer","Tastatur und Scanner"],a:1,h:"Ausgabegeräte geben dir etwas heraus: Ton oder Bild.",p:"N"},
+{c:"#dfe9d4",e:["🖨️","📄","🖼️"],t:"Das Papierlager",d:"Hier liegt leeres Papier. Eine Maschine bringt Texte und Bilder darauf.",q:"Welches Gerät bringt Ergebnisse auf Papier?",o:["Drucker","Webcam","Mikrofon"],a:0,h:"Es gibt das Ergebnis auf Papier aus.",p:"Z"},
+{c:"#e0e6f2",e:["📱","👆","🖼️"],t:"Das Smartphone-Dorf",d:"Im Dorf tippen alle auf ihre Bildschirme. Sie berühren das Display und bekommen ein Bild.",q:"Was ist ein Touchscreen?",o:["Nur ein Eingabegerät","Nur ein Ausgabegerät","Ein- und Ausgabegerät zugleich"],a:2,h:"Du tippst darauf und er zeigt gleichzeitig etwas an.",p:"I"},
+{c:"#f2ecd0",e:["🏧","💳","💶"],t:"Der Geldautomat",d:"Du steckst deine Karte ein, tippst die PIN, der Automat prüft sie und zahlt 20 € aus.",q:"Wo findet die Verarbeitung statt?",o:["Beim Einstecken der Karte","Bei der Prüfung der PIN","Bei der Geldausgabe"],a:1,h:"Verarbeitung heißt prüfen, vergleichen und rechnen.",p:"P"}
+];
+const WORD="EVA-PRINZIP";
+let cur=0,pts=0,tries=0,uname="";
+const $=id=>document.getElementById(id);
+function begin(){uname=$("name").value.trim()||"Mutiger Entdecker";$("intro").classList.add("hide");$("game").classList.remove("hide");render()}
+function drawCode(el,n){el.innerHTML=S.map((s,k)=>'<div class="slot'+(k<n?' got':'')+'">'+(k<n?s.p:"?")+'</div>').join("")}
+function scene(s){return '<svg class="sc" viewBox="0 0 300 110"><rect width="300" height="110" fill="'+s.c+'"/><circle cx="260" cy="22" r="14" fill="#fff" opacity=".6"/><text x="35" y="78" font-size="52">'+s.e[0]+'</text><text x="120" y="82" font-size="62">'+s.e[1]+'</text><text x="215" y="78" font-size="52">'+s.e[2]+'</text></svg>'}
+function render(){
+ $("path").innerHTML=S.map((s,k)=>'<div class="pd '+(k<cur?'done':k==cur?'now':'')+'"></div>').join("");
+ drawCode($("code"),cur);
+ const s=S[cur];tries=0;
+ $("st").innerHTML=scene(s)+'<h2>Station '+(cur+1)+': '+s.t+'</h2><p class="desc">'+s.d+'</p><p class="q">❓ '+s.q+'</p>'+s.o.map((o,k)=>'<button class="opt" data-k="'+k+'">'+o+'</button>').join("")+'<div id="fb"></div>';
+ document.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(b));
+}
+function pick(b){
+ const s=S[cur],k=+b.dataset.k,fb=$("fb");
+ if(k===s.a){
+  pts+=tries===0?2:1;
+  document.querySelectorAll(".opt").forEach(x=>x.disabled=true);b.classList.add("good");
+  fb.className="ok";fb.innerHTML="✅ <b>Richtig!</b> Du hast einen Codeteil gefunden: <b style='font-size:1.4rem'>"+s.p+"</b>";
+  drawCode($("code"),cur+1);
+  const n=document.createElement("button");n.className="btn";n.textContent=cur<9?"Zur nächsten Station ➜":"Code zusammensetzen ➜";
+  n.onclick=()=>{cur++;if(cur>=10){$("game").classList.add("hide");$("final").classList.remove("hide");drawCode($("code2"),10)}else render()};
+  $("st").appendChild(n);
+ }else{
+  tries++;b.classList.add("bad");b.disabled=true;
+  fb.className="no";fb.innerHTML="🤔 Noch nicht ganz. <b>Tipp:</b> "+s.h;
+ }
+}
+function check(){
+ const v=$("word").value.trim().toUpperCase().replace(/\s/g,"");
+ const f=$("ffb");f.classList.remove("hide");
+ if(v===WORD||v==="EVAPRINZIP"){
+  $("final").classList.add("hide");$("certw").classList.remove("hide");
+  $("cn").textContent=uname;$("cp").textContent=pts;
+  $("cr").innerHTML=pts>=18?"🌟 Rang: Meister-Entdecker":pts>=13?"🧭 Rang: Erfahrener Entdecker":"🌱 Rang: Junger Entdecker";
+  $("cd").textContent=new Date().toLocaleDateString("de-DE");
+ }else f.innerHTML="🤔 Das passt noch nicht. Die Teile in Reihenfolge: <b>"+S.map(s=>s.p).join(" ")+"</b>";
+}
+</script></body></html>
